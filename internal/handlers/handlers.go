@@ -13,7 +13,12 @@ import (
 )
 
 func HtmlHandler(w http.ResponseWriter, r *http.Request) {
-	data, err := os.ReadFile("../index.html")
+	filePath, err := filepath.Abs(filepath.Join("..", "index.html"))
+	if err != nil {
+		http.Error(w, "error in file location path", http.StatusInternalServerError)
+		return
+	}
+	data, err := os.ReadFile(filePath)
 	if err != nil {
 		http.Error(w, "I can't read Html-file", http.StatusInternalServerError)
 		return
