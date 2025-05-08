@@ -60,7 +60,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 	if _, err := w.Write([]byte(converted)); err != nil {
 		log.Printf("Error sending response: %v", err)
