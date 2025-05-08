@@ -13,30 +13,19 @@ import (
 )
 
 func HtmlHandler(w http.ResponseWriter, r *http.Request) {
-	filePath, err := filepath.Abs(filepath.Join("..", "index.html"))
-	if err != nil {
-		http.Error(w, "error in file location path", http.StatusInternalServerError)
-		return
-	}
-	data, err := os.ReadFile(filePath)
-	if err != nil {
-		http.Error(w, "I can't read Html-file", http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusOK)
-	w.Write(data)
+	w.Header().Add("Content-Type", "text/html")
+	http.ServeFile(w, r, "../index.html")
 }
 
 func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseMultipartForm(10 << 20); err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error1", http.StatusInternalServerError)
 		return
 	}
 
 	file, header, err := r.FormFile("myFile")
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error2", http.StatusInternalServerError)
 		return
 	}
 
@@ -44,7 +33,7 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 
 	data, err := io.ReadAll(file)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error3", http.StatusInternalServerError)
 		return
 	}
 
@@ -55,17 +44,17 @@ func UploadHandler(w http.ResponseWriter, r *http.Request) {
 	filename = strings.ReplaceAll(filename, ":", "-") + ext
 	localFile, err := os.OpenFile(filepath.Join("..", filename), os.O_CREATE|os.O_WRONLY, 0755)
 	if err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error4", http.StatusInternalServerError)
 		return
 	}
 
 	defer localFile.Close()
 
 	if _, err = localFile.Write([]byte(converted)); err != nil {
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		http.Error(w, "Internal Server Error5", http.StatusInternalServerError)
 		return
 	}
-	w.Header().Set("Content-Type", "text/html; text/plain; charset=utf-8")
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 
 	if _, err := w.Write([]byte(converted)); err != nil {
 		log.Printf("Error sending response: %v", err)
